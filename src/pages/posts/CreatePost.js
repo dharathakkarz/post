@@ -1,8 +1,7 @@
 
-
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createPost, deletePost } from '../../redux/action/Action';
+import { createPost, deletePost, updatePost } from '../../redux/action/Action'; 
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -38,11 +37,10 @@ const CreatePost = () => {
 
   const handleSubmit = () => {
     if (isEditing && currentPost) {
-      // Update the post
-      currentPost.title = title;
-      currentPost.content = content;
+  
+      dispatch(updatePost(currentPost.id, title, content)); 
     } else {
-      // Create new post
+   
       dispatch(createPost(title, content));
     }
     setTitle('');
@@ -124,3 +122,4 @@ const CreatePost = () => {
 };
 
 export default CreatePost;
+

@@ -51,16 +51,13 @@ const postsReducer = (state = initialState, action) => {
         ...state,
         posts: state.posts.filter(post => post.id !== action.payload.id),
       };
-        case EDIT_POST:
-      return {
-        ...state,
-        posts: state.posts.map(post =>
-          post.id === action.payload.id
-            ? { ...post, title: action.payload.title, content: action.payload.content }
-            : post
-        ),
-      };
-
+      case EDIT_POST:
+        return {
+          ...state,
+          posts: state.posts.map(post =>
+            post.id === action.payload.id ? { ...post, title: action.payload.title, content: action.payload.content } : post
+          ),
+        };
 
     case FETCH_USERS_REQUEST:
       return { ...state, loading: true, error: null };

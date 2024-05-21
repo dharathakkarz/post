@@ -21,12 +21,14 @@ export const deletePost = (id) => ({
   payload: { id },
 });
 
-export const updatePost = (id, title, content) => {
-  return {
-    type: EDIT_POST,
-    payload: { id, title, content },
-  };
-};
+export const updatePost = (id, title, content) => ({
+  type: EDIT_POST,
+  payload: {
+    id,
+    title,
+    content,
+  },
+});
 
 export const fetchUsersRequest = () => ({
   type: FETCH_USERS_REQUEST
