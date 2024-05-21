@@ -1,45 +1,31 @@
 
+
+
+
 import axios from 'axios';
 import {EDIT_POST, CREATE_POST,CREATE_POST_SUCCESS,FETCH_POSTS, FETCH_POSTS_SUCCESS, FETCH_POSTS_FAIL, DELETE_POST, CREATE_POST_FAIL, ADD_POST, FETCH_USERS_REQUEST, FETCH_USERS_SUCCESS, FETCH_USERS_FAILURE, FETCH_USER_ALBUMS_REQUEST, FETCH_USER_ALBUMS_FAILURE, FETCH_USER_ALBUMS_SUCCESS, FETCH_USER_TODOS_REQUEST, FETCH_USER_TODOS_SUCCESS, FETCH_USER_TODOS_FAILURE } from '../../constant/ActionType';
 
-export const fetchPosts = () => async (dispatch) => {
-  dispatch({ type: FETCH_POSTS });
 
-  try {
-    const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
-    dispatch({ type: FETCH_POSTS_SUCCESS, payload: response.data });
-  } catch (error) {
-    dispatch({ type: FETCH_POSTS_FAIL, payload: error.message });
+
+export const createPost = (title, content) => ({
+  type: CREATE_POST,
+  payload: {
+    title,
+    content
   }
-};
+});
 
 
-export const deletePost = (index) => ({
+export const deletePost = (postId) => ({
   type: DELETE_POST,
-  payload: index,
+  payload: postId,
 });
 
-export const updatePost = (index, post) => ({
-  type: EDIT_POST,
-  payload: { index, post },
+export const updatePost = (id, title, content) => ({
+  type: 'UPDATE_POST',
+  payload: { id, title, content }
 });
 
-
-
-export const createPost = (post) => async (dispatch) => {
-  dispatch({ type: CREATE_POST });
-
-  try {
-
-    await new Promise(resolve => setTimeout(resolve, 1000));
-   
-    
-    dispatch({ type: CREATE_POST_SUCCESS, payload: post });
-    console.log('Created post:', post); 
-  } catch (error) {
-    dispatch({ type: CREATE_POST_FAIL, payload: error.message });
-  }
-};
 
 export const fetchUsersRequest = () => ({
   type: FETCH_USERS_REQUEST

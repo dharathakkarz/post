@@ -1,141 +1,124 @@
 
+
+
 import React, { useState } from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
+import { useDispatch, useSelector } from 'react-redux';
+import { createPost, deletePost } from '../../redux/action/Action';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-
+import Typography from '@mui/material/Typography';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Typography from '@mui/material/Typography';
 
 const CreatePost = () => {
+  const dispatch = useDispatch();
+  const posts = useSelector(state => state.posts);
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [posts, setPosts] = useState([]);
-  const [editIndex, setEditIndex] = useState(null);
-  const [editedTitle, setEditedTitle] = useState('');
-  const [editedContent, setEditedContent] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentPost, setCurrentPost] = useState(null);
 
-  const handleClickOpen = () => {
+  const handleOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
-    setEditIndex(null); 
-    setEditedTitle('');
-    setEditedContent('');
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    if (editIndex !== null) {
-    
-      const updatedPosts = [...posts];
-      updatedPosts[editIndex] = { title: editedTitle, content: editedContent };
-      setPosts(updatedPosts);
-    } else {
-    
-      const post = { title, content };
-      setPosts([...posts, post]);
-    }
-
     setTitle('');
     setContent('');
-    setEditedTitle('');
-    setEditedContent('');
+    setIsEditing(false);
+    setCurrentPost(null);
+  };
+
+  const handleSubmit = () => {
+    if (isEditing && currentPost) {
+      // Update the post
+      currentPost.title = title;
+      currentPost.content = content;
+    } else {
+      // Create new post
+      dispatch(createPost(title, content));
+    }
+    setTitle('');
+    setContent('');
     handleClose();
   };
 
-  const handleEdit = (index) => {
-    setEditIndex(index);
-    setEditedTitle(posts[index].title);
-    setEditedContent(posts[index].content);
-    setOpen(true);
+  const handleEdit = (post) => {
+    setTitle(post.title);
+    setContent(post.content);
+    setCurrentPost(post);
+    setIsEditing(true);
+    handleOpen();
   };
 
-  const handleDelete = (index) => {
-    const updatedPosts = [...posts];
-    updatedPosts.splice(index, 1);
-    setPosts(updatedPosts);
+  const handleDelete = (postId) => {
+    console.log("Deleting post with id:", postId);
+    dispatch(deletePost(postId));
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '10px' }}>
-      <h2>Create Post</h2>
-      <Button variant="outlined" onClick={handleClickOpen} style={{ marginBottom: '15px' }}>
-        Create Your Personal Post
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px' }}>
+      <Button variant="outlined" onClick={handleOpen} style={{ marginBottom: '20px' }}>
+        Create Post
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>{editIndex !== null ? 'Edit Post' : 'Create Post'}</DialogTitle>
+        <DialogTitle>{isEditing ? 'Edit Post' : 'Create New Post'}</DialogTitle>
         <DialogContent>
-          <DialogContentText></DialogContentText>
-          <form onSubmit={handleSubmit}>
-            <div>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="title"
-                label="Title"
-                type="text"
-                fullWidth
-                value={editIndex !== null ? editedTitle : title}
-                onChange={(e) => (editIndex !== null ? setEditedTitle(e.target.value) : setTitle(e.target.value))}
-                required
-              />
-            </div>
-            <div>
-              <TextField
-                margin="dense"
-                id="content"
-                label="Content"
-                multiline
-                rows={4}
-                fullWidth
-                value={editIndex !== null ? editedContent : content}
-                onChange={(e) => (editIndex !== null ? setEditedContent(e.target.value) : setContent(e.target.value))}
-                required
-              />
-            </div>
-            <DialogActions>
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button type="submit">Submit</Button>
-            </DialogActions>
+          <form>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="title"
+              label="Title"
+              type="text"
+              fullWidth
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <TextField
+              margin="dense"
+              id="content"
+              label="Content"
+              type="text"
+              fullWidth
+              multiline
+              rows={4}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
           </form>
         </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSubmit} color="primary">{isEditing ? 'Update Post' : 'Create Post'}</Button>
+        </DialogActions>
       </Dialog>
-
       <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
-        {posts.map((post, index) => (
-          <Card key={index} sx={{ minWidth: 275, margin: '10px', position: 'relative', width: '300px' }}>
-            {/* Edit icon */}
-            <EditIcon
-              color="primary"
-              sx={{ position: 'absolute', top: 5, right: 40, cursor: 'pointer' }}
-              onClick={() => handleEdit(index)}
-            />
-            <DeleteIcon
-              color="primary"
-              sx={{ position: 'absolute', top: 5, right: 5, cursor: 'pointer' }}
-              onClick={() => handleDelete(index)}
-            />
-            <CardContent>
-              <Typography variant="h5" component="div">
-                Title: {post.title}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Content: {post.content}
-              </Typography>
-            </CardContent>
-          </Card>
+        {posts.map(post => (
+          <div key={post.id} style={{ position: 'relative', width: '300px', margin: '10px' }}>
+            <Card>
+              <CardContent>
+                <Typography variant="h5" component="h2">
+                  Title: {post.title}
+                </Typography>
+                <Typography variant="body2" component="p">
+                  Content: {post.content}
+                </Typography>
+              </CardContent>
+              <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '10px' }}>
+                <EditIcon color="primary" onClick={() => handleEdit(post)} />
+                <DeleteIcon color="primary" onClick={() => handleDelete(post.id)} />
+              </div>
+            </Card>
+          </div>
         ))}
       </div>
     </div>
@@ -143,5 +126,3 @@ const CreatePost = () => {
 };
 
 export default CreatePost;
-
-

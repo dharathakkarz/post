@@ -1,4 +1,8 @@
 
+
+
+
+
 import {
   FETCH_POSTS,
   FETCH_POSTS_SUCCESS,
@@ -8,7 +12,7 @@ import {
   CREATE_POST_SUCCESS,
   CREATE_POST_FAIL,
   EDIT_POST,
-  ADD_POST,
+ 
   FETCH_USERS_FAILURE,
   FETCH_USERS_SUCCESS,
   FETCH_USERS_REQUEST,
@@ -31,28 +35,23 @@ const initialState = {
 
 const postsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case FETCH_POSTS:
+
     case CREATE_POST:
-      return { ...state, loading: true, error: null };
-    case FETCH_POSTS_SUCCESS:
-      return { ...state, loading: false, posts: action.payload };
-    case CREATE_POST_SUCCESS:
-      return { ...state, loading: false, posts: [...state.posts, action.payload] };
-    case FETCH_POSTS_FAIL:
-    case CREATE_POST_FAIL:
-      return { ...state, loading: false, error: action.payload };
-    case DELETE_POST:
       return {
         ...state,
-        posts: state.posts.filter((_, index) => index !== action.payload),
+        posts: [...state.posts, action.payload]
       };
-    case EDIT_POST:
-      const updatedPosts = [...state.posts];
-      updatedPosts[action.payload.index] = action.payload.post;
-      return {
-        ...state,
-        posts: updatedPosts,
-      };
+      case DELETE_POST:
+        return {
+          ...state,
+          posts: state.posts.filter(post => post.id !== action.payload),
+        };
+
+
+        case 'UPDATE_POST':
+          return state.map(post => post.id === action.payload.id ? { ...post, title: action.payload.title, content: action.payload.content } : post);
+
+
     case FETCH_USERS_REQUEST:
       return { ...state, loading: true, error: null };
     case FETCH_USERS_SUCCESS:
