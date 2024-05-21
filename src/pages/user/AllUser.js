@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers, fetchUserAlbumsAndTodos } from '../../redux/action/Action';
 import Card from '@mui/material/Card';
@@ -10,11 +11,20 @@ import Box from '@mui/material/Box';
 
 const AllUser = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const userData = useSelector(state => state.users);
   const [selectedUser, setSelectedUser] = useState(null);
   const [userAlbums, setUserAlbums] = useState([]);
   const [userTodos, setUserTodos] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+
+
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (isLoggedIn === 'false') {
+      navigate('/login');
+    }
+  }, []); 
 
   useEffect(() => {
     dispatch(fetchUsers());

@@ -1,14 +1,19 @@
 
 
+
+
+
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { TextField, Button, Grid, Typography, Container } from '@mui/material';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
   const { signUp } = useAuth();
   const [error, setError] = useState('');
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     if (data.password !== data.confirmPassword) {
@@ -17,20 +22,27 @@ const SignUp = () => {
     }
 
     try {
-
       const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+      const userExists = existingUsers.some(user => user.email === data.email);
+
+      if (userExists) {
+        setError('Email already exists. Please login instead.');
+        return;
+      }
+
       const newUser = {
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
         mobileNumber: data.mobileNumber,
-        password: data.password // Note: Password is not encrypted here
+        password: data.password 
       };
       const updatedUsers = [...existingUsers, newUser];
       localStorage.setItem('users', JSON.stringify(updatedUsers));
 
-      // Call signUp function
       await signUp(data.email, data.password, data.firstName, data.lastName, data.mobileNumber);
+
+      navigate('/login');
     } catch (error) {
       setError('Sign up failed. Please try again.');
     }
@@ -42,6 +54,7 @@ const SignUp = () => {
         <Typography component="h1" variant="h5">
           Sign Up
         </Typography>
+     
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -69,6 +82,7 @@ const SignUp = () => {
                 label="Email Address"
                 type="email"
                 {...register('email', { required: true })}
+                onChange={() => setError('')} // Clear error when typing a new email
               />
               {errors.email && <Typography variant="body2" color="error">This field is required</Typography>}
             </Grid>
@@ -106,6 +120,10 @@ const SignUp = () => {
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
             Sign Up
           </Button>
+
+          <Typography variant="body2" color="textSecondary">
+          Already registered? <a href="/login">Login here</a>.
+        </Typography>
         </form>
         {error && <Typography variant="body2" color="error">{error}</Typography>}
       </div>
