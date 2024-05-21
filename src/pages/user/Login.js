@@ -8,18 +8,16 @@ const Login = () => {
   const [error, setError] = useState('');
 
   const handleLogin = () => {
-    // Retrieve user data from local storage
+
     const users = JSON.parse(localStorage.getItem('users')) || [];
 
-    // Find user with matching email
     const user = users.find(user => user.email === email);
 
-    // Check if user exists and password matches
     if (user && user.password === password) {
-      // Redirect to / page if login is successful
+
       navigate('/');
     } else {
-      // Show error message if login is unsuccessful
+   
       setError('Invalid email or password');
     }
   };
