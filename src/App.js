@@ -8,6 +8,7 @@ import AllUser from './pages/user/AllUser';
 import { AuthProvider } from './context/AuthContext';
 import SignUp from './pages/user/Signup';
 import Login from './pages/user/Login';
+  import Post from './pages/posts/Post'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path='/all-users' element={<AllUser/>} />
           <Route path='/signup' element={<SignUp/>} />
           <Route path='/login' element={<Login/>} />
+          <Route path='/post' element={<Post/>}/>
          
 
         </Routes>

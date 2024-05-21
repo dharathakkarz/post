@@ -5,7 +5,34 @@
 import axios from 'axios';
 import {EDIT_POST, CREATE_POST,CREATE_POST_SUCCESS,FETCH_POSTS, FETCH_POSTS_SUCCESS, FETCH_POSTS_FAIL, DELETE_POST, CREATE_POST_FAIL, ADD_POST, FETCH_USERS_REQUEST, FETCH_USERS_SUCCESS, FETCH_USERS_FAILURE, FETCH_USER_ALBUMS_REQUEST, FETCH_USER_ALBUMS_FAILURE, FETCH_USER_ALBUMS_SUCCESS, FETCH_USER_TODOS_REQUEST, FETCH_USER_TODOS_SUCCESS, FETCH_USER_TODOS_FAILURE } from '../../constant/ActionType';
 
+export const fetchPostsRequest = () => ({
+  type: FETCH_POSTS,
+});
 
+export const fetchPostsSuccess = (posts) => ({
+  type: FETCH_POSTS_SUCCESS,
+  payload: posts,
+});
+
+export const fetchPostsFailure = (error) => ({
+  type: FETCH_POSTS_FAIL,
+  payload: error,
+});
+
+// Async Action Creator
+export const fetchPosts = () => {
+  return (dispatch) => {
+    dispatch(fetchPostsRequest());
+    axios
+      .get('https://jsonplaceholder.typicode.com/posts')
+      .then(response => {
+        dispatch(fetchPostsSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(fetchPostsFailure(error.message));
+      });
+  };
+};
 
 export const createPost = (title, content) => ({
   type: CREATE_POST,

@@ -47,6 +47,7 @@ const Nav = () => {
                 Login
               </Button>
             )}
+         
              {location.pathname !== '/' && (
               <Button sx={{ my: 2, color: 'white', display: 'block' }} onClick={() => navigate('/')}>
                 Post

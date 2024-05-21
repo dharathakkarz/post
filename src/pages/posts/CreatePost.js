@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createPost, deletePost, updatePost } from '../../redux/action/Action'; 
 import Dialog from '@mui/material/Dialog';
@@ -13,6 +13,7 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useNavigate } from 'react-router-dom';
 
 const CreatePost = () => {
   const dispatch = useDispatch();
@@ -22,6 +23,15 @@ const CreatePost = () => {
   const [content, setContent] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [currentPost, setCurrentPost] = useState(null);
+  const navigate = useNavigate()
+
+
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (isLoggedIn === 'false') {
+      navigate('/login');
+    }
+  }, []); 
 
   const handleOpen = () => {
     setOpen(true);
@@ -122,4 +132,6 @@ const CreatePost = () => {
 };
 
 export default CreatePost;
+
+
 
