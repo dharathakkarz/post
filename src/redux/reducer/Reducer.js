@@ -36,20 +36,30 @@ const initialState = {
 const postsReducer = (state = initialState, action) => {
   switch (action.type) {
 
+    
+
+
     case CREATE_POST:
+      const newPost = {
+        id: state.posts.length + 1, // id for post
+        title: action.payload.title,
+        content: action.payload.content,
+      };
+      return { ...state, posts: [...state.posts, newPost] };
+    case DELETE_POST:
       return {
         ...state,
-        posts: [...state.posts, action.payload]
+        posts: state.posts.filter(post => post.id !== action.payload.id),
       };
-      case DELETE_POST:
-        return {
-          ...state,
-          posts: state.posts.filter(post => post.id !== action.payload),
-        };
-
-
-        case 'UPDATE_POST':
-          return state.map(post => post.id === action.payload.id ? { ...post, title: action.payload.title, content: action.payload.content } : post);
+        case EDIT_POST:
+      return {
+        ...state,
+        posts: state.posts.map(post =>
+          post.id === action.payload.id
+            ? { ...post, title: action.payload.title, content: action.payload.content }
+            : post
+        ),
+      };
 
 
     case FETCH_USERS_REQUEST:

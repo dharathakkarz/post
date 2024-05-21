@@ -1,6 +1,5 @@
 
 
-
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createPost, deletePost } from '../../redux/action/Action';
@@ -59,9 +58,8 @@ const CreatePost = () => {
     handleOpen();
   };
 
-  const handleDelete = (postId) => {
-    console.log("Deleting post with id:", postId);
-    dispatch(deletePost(postId));
+  const handleDelete = (id) => {
+    dispatch(deletePost(id));
   };
 
   return (

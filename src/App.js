@@ -2,7 +2,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import Nav from './components/Nav';
-// import Post from './pages/posts/Post';
+
 import CreatePost from './pages/posts/CreatePost';
 import AllUser from './pages/user/AllUser';
 import { AuthProvider } from './context/AuthContext';
@@ -22,6 +22,7 @@ function App() {
           <Route path='/all-users' element={<AllUser/>} />
           <Route path='/signup' element={<SignUp/>} />
           <Route path='/login' element={<Login/>} />
+         
 
         </Routes>
       </Router>

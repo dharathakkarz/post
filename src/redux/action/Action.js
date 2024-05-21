@@ -16,16 +16,17 @@ export const createPost = (title, content) => ({
 });
 
 
-export const deletePost = (postId) => ({
+export const deletePost = (id) => ({
   type: DELETE_POST,
-  payload: postId,
+  payload: { id },
 });
 
-export const updatePost = (id, title, content) => ({
-  type: 'UPDATE_POST',
-  payload: { id, title, content }
-});
-
+export const updatePost = (id, title, content) => {
+  return {
+    type: EDIT_POST,
+    payload: { id, title, content },
+  };
+};
 
 export const fetchUsersRequest = () => ({
   type: FETCH_USERS_REQUEST
