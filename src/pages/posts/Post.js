@@ -5,6 +5,7 @@ import { fetchPosts } from '../../redux/action/Action';
 import { Card, CardContent, Typography, Grid, IconButton, Box, TextField, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+// import CreatePost from './CreatePost';
 
 const Post = () => {
   const dispatch = useDispatch();
@@ -55,6 +56,9 @@ const Post = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
+   
+<>
+{/* <CreatePost/> */}
     <Grid container spacing={3} justifyContent="center">
       {localPosts.map(post => (
         <Grid item xs={12} sm={6} md={4} key={post.id}>
@@ -105,7 +109,9 @@ const Post = () => {
         </Grid>
       ))}
     </Grid>
+    </>
   );
 };
 
 export default Post;
+

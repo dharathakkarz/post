@@ -1,13 +1,11 @@
 
 
-
-
-
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { TextField, Button, Grid, Typography, Container } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import CryptoJS from 'crypto-js';
 
 const SignUp = () => {
   const { signUp } = useAuth();
@@ -30,17 +28,20 @@ const SignUp = () => {
         return;
       }
 
+
+      const encryptedPassword = CryptoJS.AES.encrypt(data.password, 'secret key').toString();
+
       const newUser = {
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
         mobileNumber: data.mobileNumber,
-        password: data.password 
+        password: encryptedPassword
       };
       const updatedUsers = [...existingUsers, newUser];
       localStorage.setItem('users', JSON.stringify(updatedUsers));
 
-      await signUp(data.email, data.password, data.firstName, data.lastName, data.mobileNumber);
+      await signUp(data.email, encryptedPassword, data.firstName, data.lastName, data.mobileNumber);
 
       navigate('/login');
     } catch (error) {
@@ -102,9 +103,13 @@ const SignUp = () => {
                 fullWidth
                 label="Password"
                 type="password"
-                {...register('password', { required: true })}
+                {...register('password', { required: true, minLength: 6 })}
               />
-              {errors.password && <Typography variant="body2" color="error">This field is required</Typography>}
+              {errors.password && (
+                <Typography variant="body2" color="error">
+                  {errors.password.type === 'required' ? 'This field is required' : 'Password must be at least 6 characters'}
+                </Typography>
+              )}
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -122,8 +127,8 @@ const SignUp = () => {
           </Button>
 
           <Typography variant="body2" color="textSecondary">
-          Already registered? <a href="/login">Login here</a>.
-        </Typography>
+            Already registered? <a href="/login">Login here</a>.
+          </Typography>
         </form>
         {error && <Typography variant="body2" color="error">{error}</Typography>}
       </div>

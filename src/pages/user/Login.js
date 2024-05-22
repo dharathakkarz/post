@@ -1,34 +1,35 @@
 
-
-
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import { TextField, Button, Box, Typography, Alert } from '@mui/material';
+import CryptoJS from 'crypto-js';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     if (isLoggedIn === 'true') {
       navigate('/');
     }
-  }, []); 
+  }, [navigate]); 
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
+  const onSubmit = (data) => {
     const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
-    const user = storedUsers.find((user) => user.email === email && user.password === password);
+    const user = storedUsers.find((user) => user.email === data.email);
 
     if (user) {
-      localStorage.setItem('loggedInUser', JSON.stringify({ email: user.email, password: user.password }));
-      localStorage.setItem('isLoggedIn', 'true');
-      navigate('/');
+      const decryptedPassword = CryptoJS.AES.decrypt(user.password, 'secret key').toString(CryptoJS.enc.Utf8);
+      if (data.password === decryptedPassword) {
+        localStorage.setItem('loggedInUser', JSON.stringify({ email: user.email, password: user.password }));
+        localStorage.setItem('isLoggedIn', 'true');
+        navigate('/');
+      } else {
+        setError('Invalid email or password');
+      }
     } else {
       setError('Invalid email or password');
     }
@@ -39,25 +40,25 @@ const Login = () => {
       <Typography variant="h4" component="h1" gutterBottom>
         Login
       </Typography>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
           label="Email"
           type="email"
           fullWidth
           required
           margin="normal"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          {...register('email', { required: true })}
         />
+        {errors.email && <Alert severity="error" sx={{ mt: 2 }}>Email is required</Alert>}
         <TextField
           label="Password"
           type="password"
           fullWidth
           required
           margin="normal"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          {...register('password', { required: true })}
         />
+        {errors.password && <Alert severity="error" sx={{ mt: 2 }}>Password is required</Alert>}
         {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
         <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 3 }}>
           Login
@@ -72,3 +73,4 @@ const Login = () => {
 };
 
 export default Login;
+

@@ -15,6 +15,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 
+
 const CreatePost = () => {
   const dispatch = useDispatch();
   const posts = useSelector(state => state.posts);
@@ -127,11 +128,12 @@ const CreatePost = () => {
           </div>
         ))}
       </div>
+      <div>
+    
+      </div>
     </div>
   );
 };
 
 export default CreatePost;
-
-
 
